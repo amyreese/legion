@@ -1,0 +1,22 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "legion"
+author = "John Reese"
+author-email = "john@noswap.com"
+description-file = "README.md"
+home-page = "https://github.com/jreese/legion"
+requires = [
+    "aiosqlite",
+    "click",
+    "discord.py",
+    "peony-twitter",
+]
+requires-python = ">=3.7"
+
+[tool.flit.sdist]
+exclude = [
+    ".github/",
+]
