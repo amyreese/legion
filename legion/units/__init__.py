@@ -3,18 +3,16 @@
 
 import logging
 import os.path
-from importlib import import_module
+from importlib import import_module, reload
 from pathlib import Path
 from types import ModuleType
-from typing import List
+from typing import List, Set
 
 LOG = logging.getLogger(__name__)
-
+MODULES: Set[ModuleType] = set()
 
 def import_units(root: Path = None) -> List[ModuleType]:
     """Find and import units in this path."""
-    modules: List[ModuleType] = []
-
     if root is None:
         root = Path(__file__)
     if not root.is_dir():
@@ -27,5 +25,18 @@ def import_units(root: Path = None) -> List[ModuleType]:
             continue
         LOG.debug(f"Loading unit {name}")
         module = import_module(f"{__name__}.{name}")
-        modules.append(module)
-    return modules
+        MODULES.add(module)
+    return list(MODULES)
+
+def reload_units() -> List[ModuleType]:
+    """Reload any previously imported modules"""
+    old_modules = list(MODULES)
+    MODULES.clear()
+
+    for module in old_modules:
+        LOG.debug(f"reloading {module}")
+        new_module = reload(module)
+        LOG.debug(f"new module {module}")
+        MODULES.add(new_module)
+
+    return list(MODULES)

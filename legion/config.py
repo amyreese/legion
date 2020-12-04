@@ -10,11 +10,19 @@ from attr import dataclass, field, fields
 
 @dataclass
 class BotConfig:
+    admins: List[int] = field(factory=list)
     debug: bool = False
     log: Optional[Path] = field(default=Path("output.log"), converter=Path)
     log_megabytes: int = 64
     log_count: int = 2
     uvloop: bool = False
+
+
+@dataclass
+class ChatlogConfig:
+    root: str = "~/discordlogs"
+    path: str = "{server}/{channel}/{date}.log"
+    format: str = "[{time}] <{user}> {message}"
 
 
 @dataclass
@@ -41,6 +49,7 @@ class QuotesConfig:
 @dataclass
 class Config:
     bot: BotConfig
+    chatlog: ChatlogConfig
     discord: DiscordConfig
     twitter: TwitterConfig
     quotes: QuotesConfig

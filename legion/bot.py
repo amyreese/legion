@@ -130,31 +130,40 @@ class Bot:
         return False
 
     async def dispatch_command(self, message: Message, match: Match):
-        mention, command, args = match.groups()
-        command = command.casefold()
+        mention, name, args = match.groups()
+        name = name.casefold()
 
-        if command not in COMMANDS:
+        if name not in COMMANDS:
             LOG.debug(
-                f"unknown command from {message.user} on {message.channel}: "
-                f"{command!r} {args!r}"
+                f"unknown command from {message.author} on {message.channel}: "
+                f"{name!r} {args!r}"
             )
             return
 
-        cls_name, fn_name, args_re, _desc = COMMANDS[command]
-        if cls_name not in self.units:
-            LOG.error(f"unknown unit {cls_name!r}")
+        command = COMMANDS[name]
+
+        if command.admin_only and message.author.id not in self.config.bot.admins:
+            LOG.warning(
+                f"user {message.author}/{message.author.id} "
+                f"requested admin command {name}"
+            )
+            await message.channel.send(f"user {message.author.id} is not an admin")
             return
 
-        unit = self.units[cls_name]
-        method = getattr(unit, fn_name, None)
+        if command.class_name not in self.units:
+            LOG.error(f"unknown unit {command.class_name!r}")
+            return
+
+        unit = self.units[command.class_name]
+        method = getattr(unit, command.method_name, None)
         if method is None:
-            LOG.error(f"unknown unit method {cls_name}.{fn_name}")
+            LOG.error(f"unknown unit method {command.class_name}.{command.method_name}")
             return
 
-        match = args_re.match(args or "")
+        match = command.args.fullmatch(args or "")
         if not match:
             await message.channel.send(
-                f"{message.user.mention} invalid arguments for {command!r}"
+                f"{message.author.mention} invalid arguments for {name!r}"
             )
             return
 

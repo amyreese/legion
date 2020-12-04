@@ -17,6 +17,7 @@ from typing import (
     TYPE_CHECKING,
 )
 
+from attr import dataclass
 from discord import Client, Message
 
 from legion.units import import_units
@@ -25,7 +26,7 @@ if TYPE_CHECKING:
     from legion.bot import Bot
 
 ALL_UNITS: Set[Type["Unit"]] = set()
-COMMANDS: Dict[str, Tuple[str, str, Pattern, str]] = {}
+COMMANDS: Dict[str, "Command"] = {}
 LOG = logging.getLogger(__name__)
 
 Event = Any
@@ -33,8 +34,23 @@ Event = Any
 T = TypeVar("T", bound=FunctionType)
 
 
+@dataclass
+class Command:
+    name: str
+    args: Pattern
+    description: str
+    usage: str
+    class_name: str
+    method_name: str
+    admin_only: bool
+
+
 def command(
-    args: str = r"(.*)", name: str = "", description: str = ""
+    args: str = r"(.*)",
+    name: str = "",
+    description: str = "",
+    usage: str = "",
+    admin_only: bool = False,
 ) -> Callable[[T], T]:
     """Decorator for automating command/args declaration and dispatch."""
 
@@ -51,7 +67,15 @@ def command(
         cls_name = fn.__qualname__.split(".")[0]
         fn_name = fn.__name__
 
-        COMMANDS[cmd] = (cls_name, fn_name, re.compile(args), description)
+        COMMANDS[cmd] = Command(
+            name=name,
+            args=re.compile(args),
+            description=description,
+            usage=usage,
+            class_name=cls_name,
+            method_name=fn_name,
+            admin_only=admin_only,
+        )
 
         return fn
 

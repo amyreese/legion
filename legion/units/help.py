@@ -27,7 +27,7 @@ REACTION = "This platform is immune to organic disease."
 
 
 class Help(Unit):
-    @command(description="[command]: show command details")
+    @command(description="show command details", usage="[command]")
     async def help(self, message: Message, phrase: str) -> str:
         phrase = phrase.strip().lower()
         detail = bool(phrase)
@@ -41,19 +41,24 @@ class Help(Unit):
 
         helps = []
         for name in sorted(command_list):
-            *_, args, description = COMMANDS[name]
-            description = textwrap.dedent(description)
+            command = COMMANDS[name]
+            description = textwrap.dedent(command.description)
+            usage = command.usage
             if detail:
                 helps.extend(
                     [
                         f"{name}:",
                         f"{description}",
-                        f"    argument regex: {args.pattern}",
+                        f"    argument regex: {command.args.pattern!r}",
                     ]
                 )
-            else:
+            elif not command.admin_only:
                 description = description.splitlines()[0].strip()
-                helps.append(f"{name} {description}")
+                if usage:
+                    helps.append(f"{name} {usage}: {description}")
+                else:
+                    helps.append(f"{name}: {description}")
+
 
         text = "\n".join(helps)
         text = f"```\n{text}\n```"
@@ -64,7 +69,7 @@ class Help(Unit):
 
         return text
 
-    @command(description=": <insert witty help text here>")
+    @command(description="<insert witty help text here>")
     async def hello(self, message: Message, phrase: str) -> str:
         return random.choice(HUMOR)
 
