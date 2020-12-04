@@ -13,6 +13,7 @@ requires = [
     "click",
     "discord.py",
     "peony-twitter",
+    "tomlkit",
 ]
 requires-python = ">=3.7"
 
