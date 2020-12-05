@@ -65,7 +65,7 @@ def load_config(path: Path) -> Config:
 
     for cf in fields(Config):
         if cf.name in document:
-            data[cf.name] = cf.type(**document[cf.name])
+            data[cf.name] = cf.type(**document[cf.name])  # type: ignore
 
         else:
             data[cf.name] = cf.type()  # type: ignore

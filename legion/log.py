@@ -4,13 +4,15 @@
 import logging
 import logging.handlers
 import sys
+from pathlib import Path
+from typing import Optional
 
 MIB = 1024 * 1024  # 1 MiB
 
 
 def init_logger(
     stdout: bool = True,
-    file_path: str = None,
+    file_path: Optional[Path] = None,
     debug: bool = False,
     log_megabytes: int = 1,
     log_count: int = 2,

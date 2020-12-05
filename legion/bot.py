@@ -110,7 +110,7 @@ class Bot:
 
     def check_command(self, message: Message) -> Optional[Match]:
         if message.author.id == self.client.user.id:
-            return False
+            return None
 
         name = self.client.user.name
         nick = name
@@ -124,7 +124,7 @@ class Bot:
             if match:
                 return match
 
-            return False
+            return None
 
         if message.guild:
             nick = message.guild.me.display_name
@@ -137,9 +137,12 @@ class Bot:
         if match:
             return match
 
-        return False
+        return None
 
-    async def dispatch_command(self, message: Message, match: Match):
+    async def dispatch_command(self, message: Message, match: Optional[Match]):
+        if not match:
+            return
+
         mention, name, args = match.groups()
         name = name.casefold()
 
@@ -203,13 +206,15 @@ class Bot:
                     LOG.exception(f"error starting unit {unit}")
 
     @dispatch
-    async def on_message(self, message: Message) -> None:
+    async def on_message(self, message: Message) -> bool:
         LOG.debug(f"message received: {message}")
 
         match = self.check_command(message)
         if match:
             await self.dispatch_command(message, match)
             return False
+
+        return True
 
     @dispatch
     async def on_reaction_add(self, reaction: Reaction, user: User) -> None:

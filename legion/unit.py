@@ -61,8 +61,8 @@ def command(
 
         cmd = name.casefold() if name else fn.__name__.casefold()
         if cmd in COMMANDS:
-            unit, _regex, _description = COMMANDS[name]
-            raise ValueError(f'command "{cmd}" already claimed by {unit.__name__}')
+            command = COMMANDS[name]
+            raise ValueError(f'command "{cmd}" already claimed by {command}')
 
         cls_name = fn.__qualname__.split(".")[0]
         fn_name = fn.__name__
