@@ -1,11 +1,14 @@
 # Copyright 2020 John Reese
 # Licensed under the MIT license
 
-from pathlib import Path
 from datetime import datetime
-from discord import DMChannel, Message, RawReactionActionEvent
-from legion.unit import Unit
+from pathlib import Path
 from typing import Tuple
+
+from discord import DMChannel, Message, RawReactionActionEvent
+
+from legion.unit import Unit
+
 
 class Chatlog(Unit):
     async def start(self):

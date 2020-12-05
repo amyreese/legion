@@ -36,7 +36,7 @@ class TwitterConfig:
     consumer_secret: str = ""
     access_key: str = ""
     access_secret: str = ""
-    timeline_channels: List[str] = field(factory=list)
+    timeline_channels: Dict[str, List[str]] = field(factory=dict)
 
 
 @dataclass

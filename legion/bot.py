@@ -4,8 +4,8 @@
 import asyncio
 import logging
 import re
-import time
 import signal
+import time
 from functools import wraps
 from typing import Union, Callable, Optional, Match
 
@@ -97,10 +97,10 @@ class Bot:
 
     async def stop(self):
         try:
-            for unit in list(self.units.values()):
+            for name, unit in list(self.units.items()):
                 LOG.info(f"stopping {unit}")
                 await unit.stop()
-                self.units.pop(unit)
+                self.units.pop(name)
 
             LOG.info("closing discord client")
             await self.client.close()
@@ -191,11 +191,16 @@ class Bot:
 
     async def on_ready(self):
         LOG.info(f"discord client ready as user {self.client.user}")
+        await self.start_units()
 
+    async def start_units(self):
         for unit in self.units.values():
             if not unit.started:
-                LOG.debug(f"starting unit {unit}")
-                await unit.start()
+                try:
+                    LOG.debug(f"starting unit {unit}")
+                    await unit.start()
+                except Exception:
+                    LOG.exception(f"error starting unit {unit}")
 
     @dispatch
     async def on_message(self, message: Message) -> None:
