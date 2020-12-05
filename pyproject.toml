@@ -10,8 +10,10 @@ description-file = "README.md"
 home-page = "https://github.com/jreese/legion"
 requires = [
     "aiosqlite",
+    "attrs",
     "click",
     "discord.py",
+    "humanize",
     "peony-twitter",
     "tomlkit",
 ]

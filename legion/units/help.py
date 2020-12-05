@@ -59,7 +59,6 @@ class Help(Unit):
                 else:
                     helps.append(f"{name}: {description}")
 
-
         text = "\n".join(helps)
         text = f"```\n{text}\n```"
 

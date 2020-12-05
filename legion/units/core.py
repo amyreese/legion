@@ -3,10 +3,13 @@
 
 import logging
 import sys
+import time
+
+from humanize import naturaldelta
 from discord import Message
 
-from legion.unit import Unit, command
 from legion.unit import ALL_UNITS, COMMANDS
+from legion.unit import Unit, command
 from legion.units import reload_units
 
 LOG = logging.getLogger(__name__)
@@ -14,7 +17,7 @@ LOG = logging.getLogger(__name__)
 
 class Core(Unit):
     @command(args="", description="reload units", admin_only=True)
-    async def reload(self, message: Message):
+    async def reload(self, message: Message) -> str:
         LOG.info("deconstituting units")
         units = self.bot.units.copy()
         self.bot.units.clear()
@@ -37,4 +40,9 @@ class Core(Unit):
             LOG.info(f"starting unit {unit}")
         self.bot.units = units
 
-        await message.channel.send("Shepard-Commander")
+        return "Shepard-Commander"
+
+    @command(args="", description="bot uptime")
+    async def uptime(self, message: Message) -> str:
+        duration = time.monotonic() - self.bot.start_time
+        return f"up {naturaldelta(duration)}"

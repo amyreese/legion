@@ -11,6 +11,7 @@ from typing import List, Set
 LOG = logging.getLogger(__name__)
 MODULES: Set[ModuleType] = set()
 
+
 def import_units(root: Path = None) -> List[ModuleType]:
     """Find and import units in this path."""
     if root is None:
@@ -27,6 +28,7 @@ def import_units(root: Path = None) -> List[ModuleType]:
         module = import_module(f"{__name__}.{name}")
         MODULES.add(module)
     return list(MODULES)
+
 
 def reload_units() -> List[ModuleType]:
     """Reload any previously imported modules"""

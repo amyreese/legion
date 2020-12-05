@@ -4,6 +4,7 @@
 import asyncio
 import logging
 import re
+import time
 import signal
 from functools import wraps
 from typing import Union, Callable, Optional, Match
@@ -73,6 +74,7 @@ class Bot:
         self.loop.add_signal_handler(signal.SIGINT, self.sigterm)
         self.loop.add_signal_handler(signal.SIGTERM, self.sigterm)
 
+        self.start_time = time.monotonic()
         self.task = asyncio.ensure_future(self.run(), loop=self.loop)
         self.loop.run_forever()
 
@@ -95,6 +97,11 @@ class Bot:
 
     async def stop(self):
         try:
+            for unit in list(self.units.values()):
+                LOG.info(f"stopping {unit}")
+                await unit.stop()
+                self.units.pop(unit)
+
             LOG.info("closing discord client")
             await self.client.close()
         finally:
