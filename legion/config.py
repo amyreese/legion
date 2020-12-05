@@ -20,9 +20,9 @@ class BotConfig:
 
 @dataclass
 class ChatlogConfig:
-    root: str = "~/discordlogs"
+    root: str = "logs"
     path: str = "{server}/{channel}/{date}.log"
-    format: str = "[{time}] <{user}> {message}"
+    format: str = "[{time}] <{user}> {message}\n"
 
 
 @dataclass

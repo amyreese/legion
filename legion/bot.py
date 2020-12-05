@@ -109,6 +109,9 @@ class Bot:
             LOG.info("does this... unit... have...")
 
     def check_command(self, message: Message) -> Optional[Match]:
+        if message.author.id == self.client.user.id:
+            return False
+
         name = self.client.user.name
         nick = name
 
