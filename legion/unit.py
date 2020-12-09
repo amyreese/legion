@@ -113,7 +113,6 @@ class Unit:
         ongoing processing will require implementation of a run loop or
         dependence on another source of events.
         """
-        self.started = True
         LOG.debug("unit %s ready", self)
 
     async def stop(self) -> None:

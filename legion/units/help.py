@@ -73,6 +73,9 @@ class Help(Unit):
         return random.choice(HUMOR)
 
     async def on_raw_reaction_add(self, payload: RawReactionActionEvent):
+        if payload.emoji.name not in ["💩", "🦠", "🤢", "🤮"]:
+            return
+
         channel = self.client.get_channel(payload.channel_id)
         message = await channel.history().get(id=payload.message_id)
         if message.author.id == self.client.user.id and len(message.reactions) < 2:

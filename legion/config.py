@@ -42,6 +42,7 @@ class TwitterConfig:
 @dataclass
 class QuotesConfig:
     db_path: Optional[Path] = field(default=Path("quotes.db"), converter=Path)
+    grab_reactions: List[str] = ["💭"]
     tweet_grabs: bool = True
     tweet_format: str = "{text}"
 

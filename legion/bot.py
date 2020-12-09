@@ -69,6 +69,11 @@ class Bot:
         if config.bot.debug:
             self.loop.set_debug(True)
 
+    def sigterm(self) -> None:
+        """Handle Ctrl-C or SIGTERM by stopping the event loop nicely."""
+        LOG.warning("Signal received, stopping execution")
+        asyncio.ensure_future(self.stop(), loop=self.loop)
+
     def start(self):
         LOG.debug("starting bot event loop")
         self.loop.add_signal_handler(signal.SIGINT, self.sigterm)
@@ -78,10 +83,25 @@ class Bot:
         self.task = asyncio.ensure_future(self.run(), loop=self.loop)
         self.loop.run_forever()
 
-    def sigterm(self) -> None:
-        """Handle Ctrl-C or SIGTERM by stopping the event loop nicely."""
-        LOG.warning("Signal received, stopping execution")
-        asyncio.ensure_future(self.stop(), loop=self.loop)
+    async def start_units(self):
+        for unit in self.units.values():
+            if not unit.started:
+                try:
+                    LOG.debug(f"starting unit {unit}")
+                    await unit.start()
+                    unit.started = True
+                except Exception:
+                    LOG.exception(f"error starting unit {unit}")
+
+    async def stop_units(self):
+        for unit in self.units.values():
+            if unit.started:
+                try:
+                    LOG.debug(f"stopping unit {unit}")
+                    unit.started = False
+                    await unit.stop()
+                except Exception:
+                    LOG.exception(f"error stopping unit {unit}")
 
     async def run(self):
         for key in dir(self):
@@ -97,10 +117,8 @@ class Bot:
 
     async def stop(self):
         try:
-            for name, unit in list(self.units.items()):
-                LOG.info(f"stopping {unit}")
-                await unit.stop()
-                self.units.pop(name)
+            await self.stop_units()
+            self.units.clear()
 
             LOG.info("closing discord client")
             await self.client.close()
@@ -195,15 +213,6 @@ class Bot:
     async def on_ready(self):
         LOG.info(f"discord client ready as user {self.client.user}")
         await self.start_units()
-
-    async def start_units(self):
-        for unit in self.units.values():
-            if not unit.started:
-                try:
-                    LOG.debug(f"starting unit {unit}")
-                    await unit.start()
-                except Exception:
-                    LOG.exception(f"error starting unit {unit}")
 
     @dispatch
     async def on_message(self, message: Message) -> bool:
