@@ -9,6 +9,7 @@ author-email = "john@noswap.com"
 description-file = "README.md"
 home-page = "https://github.com/jreese/legion"
 requires = [
+    "aioseinfeld",
     "aiosqlite",
     "attrs",
     "click",

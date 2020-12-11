@@ -31,6 +31,19 @@ class DiscordConfig:
 
 
 @dataclass
+class QuotesConfig:
+    db_path: Optional[Path] = field(default=Path("quotes.db"), converter=Path)
+    grab_reactions: List[str] = ["💭"]
+    tweet_grabs: bool = True
+    tweet_format: str = "{text}"
+
+
+@dataclass
+class SeinfeldConfig:
+    db_path: Optional[Path] = field(default=Path("seinfeld.db"), converter=Path)
+
+
+@dataclass
 class TwitterConfig:
     consumer_key: str = ""
     consumer_secret: str = ""
@@ -40,20 +53,13 @@ class TwitterConfig:
 
 
 @dataclass
-class QuotesConfig:
-    db_path: Optional[Path] = field(default=Path("quotes.db"), converter=Path)
-    grab_reactions: List[str] = ["💭"]
-    tweet_grabs: bool = True
-    tweet_format: str = "{text}"
-
-
-@dataclass
 class Config:
     bot: BotConfig
     chatlog: ChatlogConfig
     discord: DiscordConfig
-    twitter: TwitterConfig
     quotes: QuotesConfig
+    seinfeld: SeinfeldConfig
+    twitter: TwitterConfig
 
 
 def load_config(path: Path) -> Config:
