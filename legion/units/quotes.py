@@ -55,7 +55,7 @@ class QuoteDB:
                 """
                 CREATE TABLE IF NOT EXISTS quotes (
                     id INTEGER PRIMARY KEY,
-                    server ID,
+                    server INTEGER,
                     channel TEXT,
                     username TEXT,
                     added_by TEXT,
