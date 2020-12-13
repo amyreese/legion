@@ -2,16 +2,16 @@
 # Licensed under the MIT License
 
 import asyncio
-import aiosqlite
-from typing import Optional
-
-from discord import Message
 import logging
-from aioseinfeld import Seinfeld
-
-from legion.unit import Unit, command
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
+from typing import Optional
+
+import aiosqlite
+from aioseinfeld import Seinfeld
+from discord import Message
+
+from legion.unit import Unit, command
 
 LOG = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ class SeinfeldQuotes(Unit):
                 quotes = passage.quotes
 
                 header = (
-                    f'Episode s{episode.season.number}e{episode.number} '
+                    f"Episode s{episode.season.number}e{episode.number} "
                     f'"{episode.title}"'
                 )
                 lines = [f"{quote.speaker.name}:  {quote.text}" for quote in quotes]
