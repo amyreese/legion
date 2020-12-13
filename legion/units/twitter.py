@@ -8,7 +8,6 @@ import time
 from typing import Optional, List, Any
 
 from discord import Message
-from munch import Munch
 from peony import PeonyClient
 from peony.exceptions import PeonyException
 
@@ -113,7 +112,7 @@ class Twitter(Unit):
             for channel in (c for c in guild.channels if c.name in channels):
                 await channel.send(text)
 
-    async def update(self, status: str) -> Optional[Munch]:
+    async def update(self, status: str) -> Any:
         try:
             response = await self.twitter.api.statuses.update.post(status=status)
             return response
