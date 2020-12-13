@@ -1,6 +1,6 @@
+# -*- coding: utf-8 -*-
 # Copyright 2020 John Reese
 # Licensed under the MIT license
-# -*- coding: utf-8 -*-
 
 import asyncio
 import logging
