@@ -47,9 +47,9 @@ class Help(Unit):
             if detail:
                 helps.extend(
                     [
-                        f"{name}:",
-                        f"{description}",
-                        f"    argument regex: {command.args.pattern!r}",
+                        f"{name} {usage}",
+                        f"  {description}",
+                        f"  argument regex: {command.args.pattern!r}",
                     ]
                 )
             elif not command.admin_only:
