@@ -135,7 +135,8 @@ class Bot:
 
         if isinstance(message.channel, DMChannel):
             match = re.match(
-                rf"(?P<mention>@?{name}:?)?\s*(?P<command>\w+)(?:\s+(?P<args>.+))?",
+                rf"(?:(?P<mention>@?{name}:?)?\s*|!)"
+                r"(?P<command>\w+)(?:\s+(?P<args>.+))?",
                 message.clean_content,
                 re.IGNORECASE,
             )
@@ -148,7 +149,8 @@ class Bot:
             nick = message.guild.me.display_name
 
         match = re.match(
-            rf"(?P<mention>@?(?:{name}|{nick}):?)\s+(?P<command>\w+)(?:\s+(?P<args>.+))?",
+            rf"(?:(?P<mention>@?(?:{name}|{nick}):?)\s+|!)"
+            r"(?P<command>\w+)(?:\s+(?P<args>.+))?",
             message.clean_content,
             re.IGNORECASE,
         )
